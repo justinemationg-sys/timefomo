@@ -1,39 +1,94 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
-// Lazy load recharts to avoid SSR/context issues
-const LazyPieChart = React.lazy(() => 
-  import('recharts').then(module => ({
-    default: ({ data, innerRadius = 35, outerRadius = 60, children, ...props }: any) => {
-      const { PieChart, Pie, ResponsiveContainer } = module;
-      return (
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={innerRadius}
-              outerRadius={outerRadius}
-              paddingAngle={2}
-              dataKey="value"
-              {...props}
-            >
-              {children}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-      );
-    }
-  }))
-);
+// Dynamic import function for recharts to handle context issues
+const loadRecharts = () => {
+  try {
+    return import('recharts');
+  } catch (error) {
+    console.warn('Failed to load recharts:', error);
+    return Promise.reject(error);
+  }
+};
 
-const LazyCell = React.lazy(() => 
-  import('recharts').then(module => ({ default: module.Cell }))
-);
+// Create a wrapper component that handles recharts loading
+const RechartsPieChart = React.memo(({
+  data,
+  innerRadius = 35,
+  outerRadius = 60,
+  formatter,
+  tooltipStyle
+}: any) => {
+  const [recharts, setRecharts] = useState<any>(null);
+  const [error, setError] = useState(false);
 
-const LazyTooltip = React.lazy(() => 
-  import('recharts').then(module => ({ default: module.Tooltip }))
-);
+  useEffect(() => {
+    let mounted = true;
+
+    loadRecharts()
+      .then((module) => {
+        if (mounted) {
+          setRecharts(module);
+        }
+      })
+      .catch((err) => {
+        console.warn('Recharts loading error:', err);
+        if (mounted) {
+          setError(true);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (error || !recharts) {
+    return (
+      <div className="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+        <span className="text-gray-500 dark:text-gray-400 text-xs">
+          {error ? 'Chart Error' : 'Loading...'}
+        </span>
+      </div>
+    );
+  }
+
+  const { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } = recharts;
+
+  try {
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
+            paddingAngle={2}
+            dataKey="value"
+          >
+            {data.map((entry: any, index: number) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          {formatter && tooltipStyle && (
+            <Tooltip
+              formatter={formatter}
+              contentStyle={tooltipStyle}
+            />
+          )}
+        </PieChart>
+      </ResponsiveContainer>
+    );
+  } catch (renderError) {
+    console.warn('Chart render error:', renderError);
+    return (
+      <div className="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+        <span className="text-gray-500 dark:text-gray-400 text-xs">Chart Error</span>
+      </div>
+    );
+  }
+});
 
 interface PieChartData {
   name: string;
