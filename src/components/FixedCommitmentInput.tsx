@@ -46,13 +46,12 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
 
   // Smart commitment specific state
   const [smartFormData, setSmartFormData] = useState({
-    totalHoursPerWeek: 3,
+    preferredSessionDuration: 60, // consistent session duration in minutes
     preferredDays: [] as number[],
     preferredTimeRanges: [{
       start: formatHour(settings.studyWindowStartHour),
       end: formatHour(settings.studyWindowEndHour)
     }] as TimeRange[],
-    sessionDurationRange: { min: 60, max: 120 }, // in minutes
     allowTimeShifting: true,
     priorityLevel: 'standard' as 'important' | 'standard'
   });
@@ -76,19 +75,19 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
 
   // Smart commitment validation
   const isSmartTitleValid = formData.title.trim().length > 0;
-  const isSmartHoursValid = smartFormData.totalHoursPerWeek > 0 && smartFormData.totalHoursPerWeek <= 40;
   const isSmartDaysValid = smartFormData.preferredDays.length > 0;
   const isSmartTimeRangesValid = smartFormData.preferredTimeRanges.length > 0 &&
     smartFormData.preferredTimeRanges.every(range => range.start < range.end);
-  const isSmartDurationValid = smartFormData.sessionDurationRange.min > 0 &&
-    smartFormData.sessionDurationRange.min <= smartFormData.sessionDurationRange.max;
+  const isSmartDurationValid = smartFormData.preferredSessionDuration > 0;
+  const isSmartDateRangeValid = formData.dateRange.startDate && formData.dateRange.endDate &&
+    formData.dateRange.startDate <= formData.dateRange.endDate;
 
   const isFixedFormValid = isTitleValid && isTitleLengthValid && isDaysValid &&
                           isDatesValid && isTimeRangeValid && isLocationValid && isDateRangeValid &&
                           (formData.isAllDay || (isStartTimeValid && isEndTimeValid));
 
-  const isSmartFormValid = isSmartTitleValid && isSmartHoursValid && isSmartDaysValid &&
-                          isSmartTimeRangesValid && isSmartDurationValid;
+  const isSmartFormValid = isSmartTitleValid && isSmartDaysValid &&
+                          isSmartTimeRangesValid && isSmartDurationValid && isSmartDateRangeValid;
 
   const isFormValid = commitmentType === 'smart' ? isSmartFormValid : isFixedFormValid;
 
@@ -250,13 +249,12 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
       }
     });
     setSmartFormData({
-      totalHoursPerWeek: 3,
+      preferredSessionDuration: 60,
       preferredDays: [],
       preferredTimeRanges: [{
         start: formatHour(settings.studyWindowStartHour),
         end: formatHour(settings.studyWindowEndHour)
       }],
-      sessionDurationRange: { min: 60, max: 120 },
       allowTimeShifting: true,
       priorityLevel: 'standard'
     });
