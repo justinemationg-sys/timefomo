@@ -1221,6 +1221,41 @@ const StudyPlanView: React.FC<StudyPlanViewProps> = ({ studyPlans, tasks, fixedC
                         </div>
                       );
                     })}
+
+                    {/* Display commitments that count toward daily hours for upcoming dates */}
+                    {(() => {
+                      const upcomingCommitments = getCommitmentsForDate(plan.date, fixedCommitments, smartCommitments);
+                      return upcomingCommitments.map((commitment) => (
+                        <div
+                          key={`upcoming-commitment-${commitment.id}`}
+                          className="flex items-center justify-between p-2 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1">
+                              {commitment.type === 'smart' ? (
+                                <Brain className="text-blue-600 dark:text-blue-400" size={14} />
+                              ) : (
+                                <Settings className="text-blue-600 dark:text-blue-400" size={14} />
+                              )}
+                              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                                {commitment.title}
+                              </span>
+                            </div>
+                            <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full dark:bg-blue-900 dark:text-blue-300">
+                              {commitment.category}
+                            </span>
+                            <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                              📊 Productive Time
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400">
+                            <span>{commitment.startTime} - {commitment.endTime}</span>
+                            <span>•</span>
+                            <span>{formatTime(commitment.duration)}</span>
+                          </div>
+                        </div>
+                      ));
+                    })()}
                   </div>
                 </div>
               ))}
