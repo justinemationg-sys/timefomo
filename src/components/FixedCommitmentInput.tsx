@@ -537,47 +537,58 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-                  Min Session Duration (minutes)
-                </label>
-                <input
-                  type="number"
-                  min="15"
-                  max="480"
-                  step="15"
-                  value={smartFormData.sessionDurationRange.min}
-                  onChange={(e) => setSmartFormData({
-                    ...smartFormData,
-                    sessionDurationRange: {
-                      ...smartFormData.sessionDurationRange,
-                      min: parseInt(e.target.value) || 15
-                    }
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-                  Max Session Duration (minutes)
-                </label>
-                <input
-                  type="number"
-                  min="15"
-                  max="480"
-                  step="15"
-                  value={smartFormData.sessionDurationRange.max}
-                  onChange={(e) => setSmartFormData({
-                    ...smartFormData,
-                    sessionDurationRange: {
-                      ...smartFormData.sessionDurationRange,
-                      max: parseInt(e.target.value) || 120
-                    }
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-200">
+                Date Range <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                📅 When this smart commitment should be active
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1 dark:text-gray-400">
+                    Start Date
+                  </label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-2.5 text-gray-400" size={20} />
+                    <input
+                      type="date"
+                      required
+                      min={new Date().toISOString().split('T')[0]}
+                      value={formData.dateRange.startDate}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        dateRange: {
+                          ...formData.dateRange,
+                          startDate: e.target.value
+                        }
+                      })}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1 dark:text-gray-400">
+                    End Date
+                  </label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-2.5 text-gray-400" size={20} />
+                    <input
+                      type="date"
+                      required
+                      min={formData.dateRange.startDate || new Date().toISOString().split('T')[0]}
+                      value={formData.dateRange.endDate}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        dateRange: {
+                          ...formData.dateRange,
+                          endDate: e.target.value
+                        }
+                      })}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
