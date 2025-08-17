@@ -285,14 +285,6 @@ const CommitmentsList: React.FC<CommitmentsListProps> = ({
                             {(commitment as SmartCommitment).sessionDurationRange.min}min sessions (consistent)
                           </span>
                         </div>
-                        {(commitment as SmartCommitment).dateRange && (
-                          <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                            <span className="font-medium">📅</span>
-                            <span>
-                              {new Date((commitment as SmartCommitment).dateRange!.startDate).toLocaleDateString()} - {new Date((commitment as SmartCommitment).dateRange!.endDate).toLocaleDateString()}
-                            </span>
-                          </div>
-                        )}
                       </>
                     ) : (
                       // Fixed commitment display (existing logic)
