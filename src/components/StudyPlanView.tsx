@@ -1141,10 +1141,18 @@ const StudyPlanView: React.FC<StudyPlanViewProps> = ({ studyPlans, tasks, fixedC
                     </h3>
                     <div className="flex items-center space-x-2">
                       <span className="text-sm text-gray-500 dark:text-gray-300">
-                        {formatTime(plan.plannedTasks
-                          .filter(session => session.status !== 'skipped')
-                          .reduce((sum, session) => sum + session.allocatedHours, 0)
-                        )} of work
+                        {(() => {
+                          // Calculate task session hours
+                          const taskHours = plan.plannedTasks
+                            .filter(session => session.status !== 'skipped')
+                            .reduce((sum, session) => sum + session.allocatedHours, 0);
+
+                          // Calculate commitment hours for this date
+                          const commitmentHours = calculateCommittedHoursForDate(plan.date, fixedCommitments, smartCommitments);
+
+                          const totalHours = taskHours + commitmentHours;
+                          return formatTime(totalHours);
+                        })()} of work
                       </span>
                       {plan.isOverloaded && (
                         <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
