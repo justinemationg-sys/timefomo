@@ -562,12 +562,18 @@ const CalendarView: React.FC<CalendarViewProps> = ({
       }
     } else if (event.resource.type === 'smart-commitment') {
       const commitment = event.resource.data as SmartCommitment;
+      const today = getLocalDateString();
 
-      if (commitment.countsTowardDailyHours && onSelectCommitment) {
+      // Get the date of this smart commitment session
+      let sessionDate = event.start.toISOString().split('T')[0];
+
+      // Only allow clicks on smart commitments for today (same logic as task sessions)
+      if (sessionDate === today && commitment.countsTowardDailyHours && onSelectCommitment) {
         // Handle clicks on smart commitments that count toward daily hours
         const duration = moment(event.end).diff(moment(event.start), 'hours', true);
         onSelectCommitment(commitment, duration);
       }
+      // Otherwise, do nothing (not clickable on future/past dates)
     }
   };
 
