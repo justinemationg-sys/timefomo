@@ -3,6 +3,10 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 // Dynamic import function for recharts to handle context issues
 const loadRecharts = () => {
   try {
+    // Ensure React is available in the global context for recharts
+    if (typeof window !== 'undefined' && !window.React) {
+      window.React = React;
+    }
     return import('recharts');
   } catch (error) {
     console.warn('Failed to load recharts:', error);
