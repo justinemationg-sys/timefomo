@@ -432,21 +432,24 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-                  Total Hours per Week
+                  Preferred Session Duration (minutes)
                 </label>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  📅 How many hours total you want to spend on this activity each week
+                  📅 How long each study session should be (all sessions will be this exact duration)
                 </p>
-                <input
-                  type="number"
-                  min="0.5"
-                  max="40"
-                  step="0.5"
-                  value={smartFormData.totalHoursPerWeek}
-                  onChange={(e) => setSmartFormData({ ...smartFormData, totalHoursPerWeek: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  placeholder="3"
-                />
+                <select
+                  value={smartFormData.preferredSessionDuration}
+                  onChange={(e) => setSmartFormData({ ...smartFormData, preferredSessionDuration: parseInt(e.target.value) })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                >
+                  <option value={15}>15 minutes</option>
+                  <option value={30}>30 minutes</option>
+                  <option value={45}>45 minutes</option>
+                  <option value={60}>1 hour</option>
+                  <option value={90}>1.5 hours</option>
+                  <option value={120}>2 hours</option>
+                  <option value={180}>3 hours</option>
+                </select>
               </div>
 
               <div>
